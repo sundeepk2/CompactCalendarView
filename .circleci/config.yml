@@ -62,6 +62,6 @@ test:
          parallel: true
       - ./circle-android wait-for-boot
       - adb shell input keyevent 82
-      - ./gradlew verifyMode screenshotTests
+      - ./gradlew verifyMode screenshotTests:
            timeout: 1200
 
