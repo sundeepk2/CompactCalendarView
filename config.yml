@@ -31,7 +31,6 @@
 #      - store_test_results:
 #          path: app/build/test-results
 #
-version: 1
 machine:
    environment:
       ANDROID_BUILD_PATH: build/app-debug.apk
