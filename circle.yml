@@ -42,7 +42,7 @@ test:
       - adb logcat:
          background: true
          parallel: true
-      - emulator -avd circleci-android24 -no-window:
+      - emulator -avd circleci-android24:
          background: true
          parallel: true
       - circle-android wait-for-boot
