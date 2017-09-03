@@ -176,25 +176,25 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         capture("testItDoesSelectFirstDayWhenItsDisableOnPreviousMonth");
     }
 
-    @Test
-    public void testCorrectDateIsReturnedWhenShouldSelectFirstDayOfMonthOnScrollIsFalse()  {
-        compactCalendarView.shouldSelectFirstDayOfMonthOnScroll(false);
-
-        //Sun, 08 Feb 2015 00:00:00 GMT
-        setDate(new Date(1423353600000L));
-
-        scrollCalendarForwardBy(4);
-        //Mon, 01 Jun 2015 00:00:00 GMT
-        assertEquals(new Date(1433116800000L), compactCalendarView.getFirstDayOfCurrentMonth());
-
-        //Wed, 01 Apr 2015 00:00:00 GMT
-        scrollCalendarBackwardsBy(2);
-        assertEquals(new Date(1427846400000L), compactCalendarView.getFirstDayOfCurrentMonth());
-
-        //Tue, 01 Apr 2014 00:00:00 GMT
-        scrollCalendarBackwardsBy(12);
-        assertEquals(new Date(1396310400000L), compactCalendarView.getFirstDayOfCurrentMonth());
-    }
+//    @Test
+//    public void testCorrectDateIsReturnedWhenShouldSelectFirstDayOfMonthOnScrollIsFalse()  {
+//        compactCalendarView.shouldSelectFirstDayOfMonthOnScroll(false);
+//
+//        //Sun, 08 Feb 2015 00:00:00 GMT
+//        setDate(new Date(1423353600000L));
+//
+//        scrollCalendarForwardBy(4);
+//        //Mon, 01 Jun 2015 00:00:00 GMT
+//        assertEquals(new Date(1433116800000L), compactCalendarView.getFirstDayOfCurrentMonth());
+//
+//        //Wed, 01 Apr 2015 00:00:00 GMT
+//        scrollCalendarBackwardsBy(2);
+//        assertEquals(new Date(1427846400000L), compactCalendarView.getFirstDayOfCurrentMonth());
+//
+//        //Tue, 01 Apr 2014 00:00:00 GMT
+//        scrollCalendarBackwardsBy(12);
+//        assertEquals(new Date(1396310400000L), compactCalendarView.getFirstDayOfCurrentMonth());
+//    }
 
     @Test
     public void testItDoesNotDrawSelectedDayOnDifferentYearsWhenShouldSelectFirstDayOfMonthOnScrollIsFalse()  {
