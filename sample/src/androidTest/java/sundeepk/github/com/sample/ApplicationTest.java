@@ -15,9 +15,9 @@ import android.support.test.rule.UiThreadTestRule;
 import android.support.v7.app.ActionBar;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.azimolabs.conditionwatcher.ConditionWatcher;
@@ -76,6 +76,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        getInstrumentation().waitForIdleSync();
         Locale.setDefault(Locale.ENGLISH);
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
@@ -84,14 +85,6 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         mainContent = (View) activity.findViewById(R.id.parent);
         onClosedCallCount = 0;
         onOpenedCallCount = 0;
-        Runnable wakeUpDevice = new Runnable() {
-            public void run() {
-                activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            }
-        };
-        activity.runOnUiThread(wakeUpDevice);
     }
 
     @Test
@@ -102,7 +95,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
 
         //Sun, 08 Feb 2015 00:00:00 GMT
         setDate(new Date(1423353600000L));
-        onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 100, -100, 0));
+        scrollCalendarForwardBy(1);
 
         verifyNoMoreInteractions(listener);
         capture("testItDoesNotScrollWhenScrollingIsDisabled");
@@ -176,25 +169,25 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         capture("testItDoesSelectFirstDayWhenItsDisableOnPreviousMonth");
     }
 
-//    @Test
-//    public void testCorrectDateIsReturnedWhenShouldSelectFirstDayOfMonthOnScrollIsFalse()  {
-//        compactCalendarView.shouldSelectFirstDayOfMonthOnScroll(false);
-//
-//        //Sun, 08 Feb 2015 00:00:00 GMT
-//        setDate(new Date(1423353600000L));
-//
-//        scrollCalendarForwardBy(4);
-//        //Mon, 01 Jun 2015 00:00:00 GMT
-//        assertEquals(new Date(1433116800000L), compactCalendarView.getFirstDayOfCurrentMonth());
-//
-//        //Wed, 01 Apr 2015 00:00:00 GMT
-//        scrollCalendarBackwardsBy(2);
-//        assertEquals(new Date(1427846400000L), compactCalendarView.getFirstDayOfCurrentMonth());
-//
-//        //Tue, 01 Apr 2014 00:00:00 GMT
-//        scrollCalendarBackwardsBy(12);
-//        assertEquals(new Date(1396310400000L), compactCalendarView.getFirstDayOfCurrentMonth());
-//    }
+    @Test
+    public void testCorrectDateIsReturnedWhenShouldSelectFirstDayOfMonthOnScrollIsFalse()  {
+        compactCalendarView.shouldSelectFirstDayOfMonthOnScroll(false);
+
+        //Sun, 08 Feb 2015 00:00:00 GMT
+        setDate(new Date(1423353600000L));
+
+        scrollCalendarForwardBy(4);
+        //Mon, 01 Jun 2015 00:00:00 GMT
+        assertEquals(new Date(1433116800000L), compactCalendarView.getFirstDayOfCurrentMonth());
+
+        //Wed, 01 Apr 2015 00:00:00 GMT
+        scrollCalendarBackwardsBy(2);
+        assertEquals(new Date(1427846400000L), compactCalendarView.getFirstDayOfCurrentMonth());
+
+        //Tue, 01 Apr 2014 00:00:00 GMT
+        scrollCalendarBackwardsBy(12);
+        assertEquals(new Date(1396310400000L), compactCalendarView.getFirstDayOfCurrentMonth());
+    }
 
     @Test
     public void testItDoesNotDrawSelectedDayOnDifferentYearsWhenShouldSelectFirstDayOfMonthOnScrollIsFalse()  {
@@ -233,6 +226,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
 
     @Test
     public void testToolbarIsUpdatedOnScroll()  {
+        getInstrumentation().waitForIdleSync();
         //Sun, 08 Feb 2015 00:00:00 GMT
         setDate(new Date(1423353600000L));
         onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 100, -100, 0));
@@ -340,19 +334,21 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
 
     @Test
     public void testItDisplaysDaysFromOtherMonthsForAfterScrollingFromFebToMarch(){
+        getInstrumentation().waitForIdleSync();
         //Sun, 08 Feb 2015 00:00:00 GMT
         setDate(new Date(1423353600000L));
         setShouldDrawDaysFromOtherMonths(true);
-        onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 100, -100, 0));
+        scrollCalendarForwardBy(1);
         capture("testItDisplaysDaysFromOtherMonthsForAfterScrollingFromFebToMarch");
     }
 
     @Test
     public void testItDisplaysDaysFromOtherMonthsForAfterScrollingFromFebToJan(){
         //Sun, 08 Feb 2015 00:00:00 GMT
-        setDate(new Date(1423353600000L));
         setShouldDrawDaysFromOtherMonths(true);
-        onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 100, 200, 0));
+        setDate(new Date(1423353600000L));
+        getInstrumentation().waitForIdleSync();
+        scrollCalendarBackwardsBy(1);
         capture("testItDisplaysDaysFromOtherMonthsForAfterScrollingFromFebToJan");
     }
 
@@ -607,7 +603,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
                         .setExactHeightPx(mainContent.getHeight())
                         .setExactWidthPx(mainContent.getWidth())
                         .layout();
-
+                safeSleep(200);
                 Screenshot.snap(mainContent)
                         .setName(name)
                         .record();
@@ -766,13 +762,32 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
 
     private void scrollCalendarForwardBy(int months) {
         for (int i =0; i < months; i++) {
-            onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 100, -100, 0));
+            onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 100, -200, 0));
+            safeSleep();
         }
     }
 
     private void scrollCalendarBackwardsBy(int months) {
         for (int i =0; i < months; i++) {
-            onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 100, 200, 0));
+            onView(withId(R.id.compactcalendar_view)).perform(scroll(100, 10, 300, 0));
+            safeSleep();
+        }
+    }
+
+
+    private void safeSleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            Log.e("ApplicationTest", "Error occurred while sleeping.", e);
+        }
+    }
+
+    private void safeSleep() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Log.e("ApplicationTest", "Error occurred while sleeping.", e);
         }
     }
 }
