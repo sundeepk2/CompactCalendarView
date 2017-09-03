@@ -59,7 +59,7 @@ test:
       - emulator -avd circleci-android24-googleapis -verbose -no-window -gpu swiftshader:
          background: true
          parallel: true
-      - ./circle-android wait-for-boot
+      - circle-android wait-for-boot
       - adb shell input keyevent 82
       - ./gradlew verifyMode screenshotTests:
            timeout: 1200
