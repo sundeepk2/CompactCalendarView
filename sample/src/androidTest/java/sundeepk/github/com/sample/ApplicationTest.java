@@ -17,6 +17,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.azimolabs.conditionwatcher.ConditionWatcher;
@@ -83,6 +84,14 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         mainContent = (View) activity.findViewById(R.id.parent);
         onClosedCallCount = 0;
         onOpenedCallCount = 0;
+        Runnable wakeUpDevice = new Runnable() {
+            public void run() {
+                activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+        };
+        activity.runOnUiThread(wakeUpDevice);
     }
 
     @Test
