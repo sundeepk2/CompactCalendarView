@@ -7,6 +7,33 @@ Still under active development.
 # Contributing  
 Please raise an issue of the requirement so that a discussion can take before any code is written, even if you intend to raise a pull request.
 
+# Testing
+CompactCalendarView makes use of screenshot-tests-for-android (https://github.com/facebook/screenshot-tests-for-android). This is for UI testing as this. Since screenshot-tests-for-android takes screenshots, we meed a way to ensure images can be reproduced consistently. To do this a specific emulator is used to run tests.
+Unfortunately, an older emulator is used for now. To run this locally, run the below commands:
+
+Pre-requisite:
+ Install android-19 (can be done through android sdk manager).
+
+Install the abi and accept:
+ ```bash
+$ android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-19
+ ```
+
+Create the emulator:
+```bash
+$ echo no | android create avd --force -n test -t android-19 --abi armeabi-v7a
+```
+
+Create sd card:
+```bash
+$ mksdcard -l sdcard 100M sdcard
+```
+
+Run emulator:
+```bash
+$ emulator -avd test -no-audio -no-window -sdcard sdcard &
+```
+
 # Open/Close animations
 The library supports opening/closing with or without animations. 
 
