@@ -20,6 +20,10 @@ android:
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-19
 
+before_install:
+  - sudo apt-get -y install python3-pip python-dev
+  - pip install Pillow
+
 before_script:
   - android list targets
   - echo no | android create avd --force -n test -t android-19 --abi armeabi-v7a
