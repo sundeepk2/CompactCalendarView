@@ -15,6 +15,7 @@ The library supports opening/closing with or without animations.
 # Example usage
 It is possible to change the appearance of the view via a few properties. This includes the background color, text color, textsize color of the current day and the color of the first day of the month.
 
+
 ```xml
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         xmlns:app="http://schemas.android.com/apk/res-auto"
