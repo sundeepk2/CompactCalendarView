@@ -62,7 +62,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
     @Rule
     public UiThreadTestRule uiThreadTestRule = new UiThreadTestRule();
 
-    private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
+    private SimpleDateFormat dateFormatForMonth;
     private CompactCalendarView compactCalendarView;
     private MainActivity activity;
     private View mainContent;
@@ -79,6 +79,7 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
         getInstrumentation().waitForIdleSync();
         Locale.setDefault(Locale.ENGLISH);
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         activity = getActivity();
         compactCalendarView = (CompactCalendarView) activity.findViewById(R.id.compactcalendar_view);
@@ -334,7 +335,6 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
 
     @Test
     public void testItDisplaysDaysFromOtherMonthsForAfterScrollingFromFebToMarch(){
-        getInstrumentation().waitForIdleSync();
         //Sun, 08 Feb 2015 00:00:00 GMT
         setDate(new Date(1423353600000L));
         setShouldDrawDaysFromOtherMonths(true);
@@ -616,9 +616,10 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
             @Override
             public void run() {
                 compactCalendarView.setCurrentDate(date);
+                ActionBar toolbar = activity.getSupportActionBar();
+                toolbar.setTitle(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
             }
         });
-        syncToolbarDate();
     }
 
     private void shouldSelectFirstDayOfMonthOnScroll(final boolean shouldSelectFirstDay) {
@@ -626,10 +627,10 @@ public class ApplicationTest extends ActivityInstrumentationTestCase2<MainActivi
             @Override
             public void run() {
                 compactCalendarView.shouldSelectFirstDayOfMonthOnScroll(shouldSelectFirstDay);
-
+                ActionBar toolbar = activity.getSupportActionBar();
+                toolbar.setTitle(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
             }
         });
-        syncToolbarDate();
     }
 
     public ViewAction clickXY(final float x, final float y){
