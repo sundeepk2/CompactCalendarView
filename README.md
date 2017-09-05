@@ -34,6 +34,19 @@ Run emulator:
 $ emulator -avd test -no-audio -no-window -sdcard sdcard &
 ```
 
+Running the tests to verify that the current tests pass and to check which tests are not producing the same screenshot
+```bash
+$ ./gradlew verifyMode screenshotTests 
+```
+
+To generate new screenshot
+```bash
+$ ./gradlew recordMode screenshotTests 
+```
+
+## Android studio emulator
+It's possible to test using android studio emulator. However, it must be android 19 and and 480x800 screen resolution. One example is the Nexus S emulator. Just start the emulator and execute the gradle commands to run the tests. Emulator should be found automatically.
+
 # Open/Close animations
 The library supports opening/closing with or without animations. 
 
