@@ -11,7 +11,6 @@ android:
   components:
     - tools
     - build-tools-24.0.3
-    - android-23
     - android-24
     - android-19
     - extra-android-support
@@ -34,5 +33,6 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
+  - ./gradlew test
   - ./gradlew verifyMode screenshotTests -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms1024m -Xmx1024m" -Dorg.gradle.daemon=false
 

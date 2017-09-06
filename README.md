@@ -11,8 +11,10 @@ Please raise an issue of the requirement so that a discussion can take before an
 CompactCalendarView makes use of screenshot-tests-for-android (https://github.com/facebook/screenshot-tests-for-android). This is for UI testing as this. Since screenshot-tests-for-android takes screenshots, we meed a way to ensure images can be reproduced consistently. To do this a specific emulator is used to run tests.
 Unfortunately, an older emulator is used for now. New pull requests which change functionality some how should aim to create new screenshot tests or unit tests if possible. To run this locally, run the below commands:
 
-Pre-requisite:
- Install android-19 (can be done through android sdk manager).
+Pre-requisite (Also refer to .travis.yml):
+- Python
+- Python pillow installed 
+- Install android-19 (can be done through android sdk manager).
 
 Install the abi and accept:
  ```bash
