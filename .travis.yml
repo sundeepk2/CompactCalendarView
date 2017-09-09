@@ -22,6 +22,7 @@ android:
     - tools
     - build-tools-24.0.3
     - android-19
+    - android-24
     - sys-img-armeabi-v7a-android-19
 
 before_install:
