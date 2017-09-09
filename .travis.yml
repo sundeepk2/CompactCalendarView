@@ -1,38 +1,36 @@
-language: android
 sudo: required
 env:
   global:
     - ADB_INSTALL_TIMEOUT=8 # 8 minutes (2 minutes by default)
 
-jdk:
-  - oraclejdk8
+matrix:
+  include:
+    - language: python
+      python: 2.7
+      before_script: - sudo pip install Pillow
 
-android:
-  components:
-    - tools
-    - build-tools-24.0.3
-    - android-24
-    - android-19
-    - extra-android-support
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-19
+    - language: android
+      jdk: oraclejdk8
+      android:
+        components:
+          - tools
+          - build-tools-24.0.3
+          - android-19
+          - sys-img-armeabi-v7a-android-19
 
-before_install:
-  - sudo apt-get -y install python3-pip python-dev
-  - sudo pip install Pillow
+      before_install:
+        - sudo pip install Pillow
 
-before_script:
-  - echo no | android create avd --force -n test -t android-19 --abi armeabi-v7a
-  - mksdcard -l sdcard 100M sdcard
-  - emulator -avd test -no-audio -no-window -sdcard sdcard &
-  - android-wait-for-emulator
-  - adb shell settings put global window_animation_scale 0 &
-  - adb shell settings put global transition_animation_scale 0 &
-  - adb shell settings put global animator_duration_scale 0 &
-  - adb shell input keyevent 82 &
+      before_script:
+        - echo no | android create avd --force -n test -t android-19 --abi armeabi-v7a
+        - mksdcard -l sdcard 100M sdcard
+        - emulator -avd test -no-audio -no-window -sdcard sdcard &
+        - android-wait-for-emulator
+        - adb shell settings put global window_animation_scale 0 &
+        - adb shell settings put global transition_animation_scale 0 &
+        - adb shell settings put global animator_duration_scale 0 &
+        - adb shell input keyevent 82 &
 
-script:
-  - ./gradlew verifyMode screenshotTests -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms1024m -Xmx1024m" -Dorg.gradle.daemon=false
-  - ./gradlew test
-
+      script:
+        - ./gradlew verifyMode screenshotTests -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms1024m -Xmx1024m" -Dorg.gradle.daemon=false
+        - ./gradlew test
